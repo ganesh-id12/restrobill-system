@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Billing System</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .total { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Restaurant Billing System</h1>
+        <div id="menu">
+            <div class="item">
+                <span>Paneer Butter Masala</span>
+                <span>₹250</span>
+                <input type="number" id="paneerQty" placeholder="Qty" min="0">
+            </div>
+            <div class="item">
+                <span>Chicken Biryani</span>
+                <span>₹300</span>
+                <input type="number" id="biryaniQty" placeholder="Qty" min="0">
+            </div>
+            <div class="item">
+                <span>Masala Dosa</span>
+                <span>₹100</span>
+                <input type="number" id="dosaQty" placeholder="Qty" min="0">
+            </div>
+        </div>
+        <button onclick="calculateBill()">Calculate Bill</button>
+        <div id="bill">
+            <p>Subtotal: ₹<span id="subtotal">0.00</span></p>
+            <p>Tax (5%): ₹<span id="tax">0.00</span></p>
+            <p>Service Charge (10%): ₹<span id="serviceCharge">0.00</span></p>
+            <p class="total">Total: ₹<span id="total">0.00</span></p>
+        </div>
+        <button onclick="generateDailyReport()">Generate Daily Report</button>
+        <div id="report">
+            <p>Total Orders: <span id="totalOrders">0</span></p>
+            <p>Total Sales: ₹<span id="totalSales">0.00</span></p>
+        </div>
+    </div>
+    <script>
+
+const restaurantData = {
+    menu: {
+        items: [
+            { name: "Paneer Butter Masala", price: 250 },
+            { name: "Chicken Biryani", price: 300 },
+            { name: "Masala Dosa", price: 100 }
+        ],
+        taxRate: 0.05,
+        serviceChargeRate: 0.1
+    },
+    orders: []
+};
+
+function calculateBill() {
+    const paneerQty = parseInt(document.getElementById('paneerQty').value) || 0;
+    const biryaniQty = parseInt(document.getElementById('biryaniQty').value) || 0;
+    const dosaQty = parseInt(document.getElementById('dosaQty').value) || 0;
+
+    let subtotal = (paneerQty * 250) + (biryaniQty * 300) + (dosaQty * 100);
+    let tax = subtotal * restaurantData.menu.taxRate;
+    let serviceCharge = subtotal * restaurantData.menu.serviceChargeRate;
+    let total = subtotal + tax + serviceCharge;
+
+    document.getElementById('subtotal').innerText = subtotal.toFixed(2);
+    document.getElementById('tax').innerText = tax.toFixed(2);
+    document.getElementById('serviceCharge').innerText = serviceCharge.toFixed(2);
+    document.getElementById('total').innerText = total.toFixed(2);
+
+    restaurantData.orders.push({ subtotal, tax, serviceCharge, total });
+}
+
+function generateDailyReport() {
+    let totalSales = 0;
+    restaurantData.orders.forEach(order => {
+        totalSales += order.total;
+    });
+
+    document.getElementById('totalOrders').innerText = restaurantData.orders.length;
+    document.getElementById('totalSales').innerText = totalSales.toFixed(2);
+}
+
+    </script>
+</body>
+</html>
